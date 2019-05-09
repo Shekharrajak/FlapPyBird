@@ -4,7 +4,7 @@ import sys
 
 import pygame
 from pygame.locals import *
-
+import csv
 
 FPS = 30
 SCREENWIDTH  = 288
@@ -226,6 +226,7 @@ def mainGame(movementInfo):
 
 
     while True:
+        action = 0 # 0 for nothin, 1 for jump
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
@@ -235,11 +236,23 @@ def mainGame(movementInfo):
                     playerVelY = playerFlapAcc
                     playerFlapped = True
                     SOUNDS['wing'].play()
+                    action = 1
 
         # check for crash here
         crashTest = checkCrash({'x': playerx, 'y': playery, 'index': playerIndex},
                                upperPipes, lowerPipes)
         if crashTest[0]:
+            # add data row for traing
+            row = [
+                playerx, playery,
+                upperPipes[0]['x'], upperPipes[0]['y'],
+                lowerPipes[0]['x'], lowerPipes[0]['y'],
+                0]
+
+            with open('data/train.csv','a') as trainFile:
+                writer = csv.writer(trainFile)
+                writer.writerow(row)
+
             return {
                 'y': playery,
                 'groundCrash': crashTest[1],
@@ -312,13 +325,22 @@ def mainGame(movementInfo):
         visibleRot = playerRotThr
         if playerRot <= playerRotThr:
             visibleRot = playerRot
-        
+
         playerSurface = pygame.transform.rotate(IMAGES['player'][playerIndex], visibleRot)
         SCREEN.blit(playerSurface, (playerx, playery))
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+        # add data row for traing
+        row = [
+            playerx, playery,
+            upperPipes[0]['x'], upperPipes[0]['y'],
+            lowerPipes[0]['x'], lowerPipes[0]['y'],
+            action]
 
+        with open('data/train.csv','a') as trainFile:
+            writer = csv.writer(trainFile)
+            writer.writerow(row)
 
 def showGameOverScreen(crashInfo):
     """crashes the player down ans shows gameover image"""
@@ -372,7 +394,7 @@ def showGameOverScreen(crashInfo):
         SCREEN.blit(IMAGES['base'], (basex, BASEY))
         showScore(score)
 
-        
+
 
 
         playerSurface = pygame.transform.rotate(IMAGES['player'][1], playerRot)
