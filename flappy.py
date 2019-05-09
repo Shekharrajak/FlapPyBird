@@ -312,7 +312,7 @@ def mainGame(movementInfo):
         visibleRot = playerRotThr
         if playerRot <= playerRotThr:
             visibleRot = playerRot
-        
+
         playerSurface = pygame.transform.rotate(IMAGES['player'][playerIndex], visibleRot)
         SCREEN.blit(playerSurface, (playerx, playery))
 
@@ -372,7 +372,7 @@ def showGameOverScreen(crashInfo):
         SCREEN.blit(IMAGES['base'], (basex, BASEY))
         showScore(score)
 
-        
+
 
 
         playerSurface = pygame.transform.rotate(IMAGES['player'][1], playerRot)
@@ -431,7 +431,7 @@ def checkCrash(player, upperPipes, lowerPipes):
 
     # if player crashes into ground
     if player['y'] + player['h'] >= BASEY - 1:
-        return [True, True]
+        return [True, True] # yes crashed, with base
     else:
 
         playerRect = pygame.Rect(player['x'], player['y'],
@@ -454,7 +454,7 @@ def checkCrash(player, upperPipes, lowerPipes):
             lCollide = pixelCollision(playerRect, lPipeRect, pHitMask, lHitmask)
 
             if uCollide or lCollide:
-                return [True, False]
+                return [True, False] # yes crashed but not with base,its pipe
 
     return [False, False]
 
