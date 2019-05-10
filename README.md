@@ -1,3 +1,6 @@
+UPDATED version of this forked repo is here: https://github.com/Shekharrajak/gym-flappybird
+
+
 FlapPyBird
 ===============
 
